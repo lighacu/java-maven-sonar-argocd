@@ -83,11 +83,11 @@ stage('Update Deployment File') {
                 cd repo-temp
 
                 # 4. Configure Git identity
-                git config user.email "gopikakt2005@gmail.com"
+                git config user.email "lighacu@gmail.com"
                 git config user.name "${GIT_USER_NAME}"
 
                 # 5. Update the image tag in your manifest file
-                sed -i "s|image: .*|image: gopikakt2005/static-website:${BUILD_NUMBER}|g" spring-boot-app-manifest/deployment.yml
+                sed -i "s|image: .*|image: ligha/static-website:${BUILD_NUMBER}|g" spring-boot-app-manifest/deployment.yml
 
                 # 6. Commit and Push
                 git add spring-boot-app-manifest/deployment.yml
