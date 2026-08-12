@@ -87,10 +87,10 @@ stage('Update Deployment File') {
                 git config user.name "${GIT_USER_NAME}"
 
                 # 5. Update the image tag in your manifest file
-                sed -i "s|image: .*|image: ligha/static-website:${BUILD_NUMBER}|g" spring-boot-app-manifest/deployment.yml
+                sed -i "s|image: .*|image: ligha/ultimate-cicd:${BUILD_NUMBER}|g" spring-boot-app-manifests/deployment.yml
 
                 # 6. Commit and Push
-                git add spring-boot-app-manifest/deployment.yml
+                git add spring-boot-app-manifests/deployment.yml
                 git commit -m "Update static site image tag to ${BUILD_NUMBER} [skip ci]" || echo "No changes to commit"
                 git push origin main
             '''
