@@ -62,41 +62,45 @@ pipeline {
 stage('Update Deployment File') {
     environment {
         GIT_REPO_NAME = "java-maven-sonar-argocd"
-        GIT_USER_NAME = "lighacu" // Update to match your GitHub owner username
+        GIT_USER_NAME = "lighacu"
     }
     steps {
         withCredentials([
             usernamePassword(
-                credentialsId: 'git-hub', // Matches your Jenkins Credential ID from the screenshot
+                credentialsId: 'git-hub',
                 usernameVariable: 'GITHUB_USERNAME',
                 passwordVariable: 'GITHUB_TOKEN'
             )
         ]) {
             sh '''
-                # 1. Clean up any previous temporary clone
+                # 1. Clean up old clone folder
                 rm -rf repo-temp
 
-                # 2. Clone the repository fresh with authenticated URL
+                # 2. Clone repository fresh
                 git clone https://${GITHUB_USERNAME}:${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME}.git repo-temp
 
-                # 3. Enter the cloned repository root
+                # 3. Enter folder
                 cd repo-temp
 
                 # 4. Configure Git identity
                 git config user.email "lighacu@gmail.com"
                 git config user.name "${GIT_USER_NAME}"
 
-                # 5. Update the image tag in your manifest file
+                # 5. Update the image tag in manifest
                 sed -i "s|image: .*|image: ligha/ultimate-cicd:${BUILD_NUMBER}|g" spring-boot-app-manifests/deployment.yml
 
-                # 6. Commit and Push
+                # 6. Commit, Rebase, and Push
                 git add spring-boot-app-manifests/deployment.yml
                 git commit -m "Update static site image tag to ${BUILD_NUMBER} [skip ci]" || echo "No changes to commit"
+
+                # Pull any remote changes that happened during the build before pushing
+                git pull --rebase origin main
+
+                # Push changes
                 git push origin main
             '''
         }
     }
-}
-       
+}     
     }
 }
