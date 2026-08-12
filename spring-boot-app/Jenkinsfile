@@ -11,7 +11,6 @@ pipeline {
         stage('Checkout') {
             steps {
                 sh 'echo "Checkout passed"'
-                // git branch: 'main', url: 'https://github.com/user/repo.git'
             }
         }
 
@@ -20,7 +19,7 @@ pipeline {
                 sh 'ls -ltr'
 
                 sh '''
-                    cd java-maven-sonar-argocd-helm-k8s/spring-boot-app
+                    cd spring-boot-app
                     mvn clean package
                 '''
             }
@@ -30,8 +29,7 @@ pipeline {
             steps {
                 withSonarQubeEnv('sonarqube') {
                     sh '''
-                        cd java-maven-sonar-argocd-helm-k8s/spring-boot-app
-
+                        cd spring-boot-app
                         mvn org.sonarsource.scanner.maven:sonar-maven-plugin:5.1.0.4751:sonar \
                         -Dsonar.projectKey=my-ec2-project \
                         -Dsonar.projectName="Spring Boot App" \
@@ -48,8 +46,7 @@ pipeline {
 
             steps {
                 script {
-
-                    sh 'docker build -t ${DOCKER_IMAGE} java-maven-sonar-argocd-helm-k8s/spring-boot-app'
+                    sh 'docker build -t ${DOCKER_IMAGE} spring-boot-app'
 
                     def dockerImage = docker.image("${DOCKER_IMAGE}")
 
@@ -77,7 +74,6 @@ pipeline {
                         variable: 'GITHUB_TOKEN'
                     )
                 ]) {
-
                     sh '''
                         git config user.email "lighacu@gmail.com"
                         git config user.name "${GIT_USER_NAME}"
