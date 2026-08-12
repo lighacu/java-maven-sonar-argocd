@@ -77,7 +77,7 @@ pipeline {
                         git config user.email "lighacu@gmail.com"
                         git config user.name "${GIT_USER_NAME}"
 
-                        sed -i "s|image: .*|image: ligha/spring-boot-app:${BUILD_NUMBER}|g" spring-boot-app-manifests/deployment.yml
+                        sed -i "s|image: .*|image: ligha/ultimate-cicd:${BUILD_NUMBER}|g" spring-boot-app-manifests/deployment.yml
 
                         git add spring-boot-app-manifests/deployment.yml
 
